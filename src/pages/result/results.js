@@ -17,13 +17,17 @@ class Result extends Component {
   async componentDidMount(){
     const arr = window.location.href.split('/')
     const slug = arr[arr.length-1].split('?')[0]
-    const to = new Date().toISOString()
+    const to = new Date()
+    const dDay = to.setDate(to.getDate() -2)
 
-    axios.get(`https://api.covid19api.com/country/${slug}/status/confirmed?from=2020-10-01T00:00:00Z&to=${to}`)
+    axios.get(`https://api.covid19api.com/total/country/${slug}/status/confirmed?from=2020-10-01T00:00:00Z&to=${to.toISOString()}Z`)
       .then( conf => {
-        console.log(conf)
-        const numConf = conf && conf.data.map(m => m.Cases) || null
-        let confirmed = numConf ? numConf.reduce((a,b) => a+b, 0) : "No data available on confirmed cases."
+        const numConf = conf && conf.data.filter(m => new Date(m.Date) >= new Date("2020-10-01T00:00:00Z")) || null
+        const oct1st = numConf && numConf.filter(m => m.Date === "2020-10-01T00:00:00Z").map(m=> m.Cases).reduce((a,b) => a+b, 0) || null
+        console.log(oct1st)
+        const endOfMonth = numConf && numConf.filter(m => new Date(m.Date) >= new Date(dDay)).map(m => m.Cases).reduce((a,b) => a+b, 0) || null
+        console.log(endOfMonth)
+        let confirmed = endOfMonth - oct1st
         if(isNaN(confirmed) || confirmed === 0) confirmed = "No data available on confirmed cases."
         this.setState({ confirmed: confirmed })
       })
@@ -32,11 +36,15 @@ class Result extends Component {
           this.setState({ confirmed: "No data available on confirmed cases." })
       })
 
-    axios.get(`https://api.covid19api.com/country/${slug}/status/recovered?from=2020-10-01T00:00:00Z&to=${to}`)
+    axios.get(`https://api.covid19api.com/total/country/${slug}/status/recovered?from=2020-10-01T00:00:00Z&to=${to}`)
       .then( rec => {
-        const numRec = rec && rec.data.map(m => m.Cases) || null
-        let recovered = numRec ? numRec.reduce((a,b) => a+b, 0) : "No data available on confirmed cases."
-        if(isNaN(recovered) || recovered === 0) recovered = "No data available on recovered cases."
+        const numRec = rec && rec.data.filter(m => new Date(m.Date) >= new Date("2020-10-01T00:00:00Z")) || null
+        const oct1st = numRec && numRec.filter(m => m.Date === "2020-10-01T00:00:00Z").map(m=> m.Cases).reduce((a,b) => a+b, 0) || null
+        console.log(oct1st)
+        const endOfMonth = numRec && numRec.filter(m => new Date(m.Date) >= new Date(dDay)).map(m => m.Cases).reduce((a,b) => a+b, 0) || null
+        console.log(endOfMonth)
+        let recovered = endOfMonth - oct1st
+        if(isNaN(recovered) || recovered === 0) recovered = "No data available on confirmed cases."
         this.setState({ recovered: recovered })
       })
       .catch( error => {
@@ -44,11 +52,15 @@ class Result extends Component {
         this.setState({ recovered: "No data available on recovered cases." })
       })
 
-    axios.get(`https://api.covid19api.com/country/${slug}/status/deaths?from=2020-10-01T00:00:00Z&to=${to}`)
+    axios.get(`https://api.covid19api.com/total/country/${slug}/status/deaths?from=2020-10-01T00:00:00Z&to=${to}`)
       .then( dead => {
-        const numDead = dead && dead.data.map(m => m.Cases) || null
-        let deaths = numDead ? numDead.reduce((a,b) => a+b, 0) : "No data available on confirmed cases."
-        if(isNaN(deaths) || deaths === 0) deaths = "No data available on deaths."
+        const numDead = dead && dead.data.filter(m => new Date(m.Date) >= new Date("2020-10-01T00:00:00Z")) || null
+        const oct1st = numDead && numDead.filter(m => m.Date === "2020-10-01T00:00:00Z").map(m=> m.Cases).reduce((a,b) => a+b, 0) || null
+        console.log(oct1st)
+        const endOfMonth = numDead && numDead.filter(m => new Date(m.Date) >= new Date(dDay)).map(m => m.Cases).reduce((a,b) => a+b, 0) || null
+        console.log(endOfMonth)
+        let deaths = endOfMonth - oct1st
+        if(isNaN(deaths) || deaths === 0) deaths = "No data available on confirmed cases."
         this.setState({ deaths: deaths })
       })
       .catch(error => {
