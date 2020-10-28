@@ -1,5 +1,5 @@
 import { React, Component } from 'react'
-import { Link } from 'react-router-dom'
+import { Button, Menu, MenuDivider, MenuItem, Popover, Position } from "@blueprintjs/core"
 import axios from 'axios'
 
 class Home extends Component {
@@ -15,18 +15,26 @@ class Home extends Component {
   async componentDidMount(){
     const res = await axios.get('https://api.covid19api.com/countries')
     console.log(res)
-    const countries = res.data.map(r => { return {"country": r.Country, "slug": r.Slug} })
+    let countries = res.data.map(r => { return {"country": r.Country, "slug": r.Slug} })
+    countries.sort((a,b) => (a.country > b.country) ? 1 : ((b.country > a.country) ? -1 : 0))
     this.setState({ countries: countries })
   }
 
   render(){
-    return(
-      <select>
-        {this.state.countries && this.state.countries.map(
-          c => { return <option>{c.country}</option> }
-        )}
-      </select>
-    )
+    const exampleMenu = (
+            <Menu>
+                {this.state.countries && this.state.countries.map(
+                  m => {
+                    return <MenuItem text = {m.country} href = {`/result/${m.slug}`} />
+                  }
+                )}
+            </Menu>
+        );
+        return (
+          <Popover content={exampleMenu} position={Position.RIGHT_BOTTOM}>
+              <Button icon="share" text="Kike please style this better" />
+          </Popover>
+        );
   }
 
 }
