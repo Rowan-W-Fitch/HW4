@@ -1,6 +1,11 @@
-import { React, Component } from 'react'
-import { Card, Elevation, Button } from '@blueprintjs/core'
+import { React, Component, Fragment } from 'react'
+import { Card, Elevation } from '@blueprintjs/core'
+import { Button, Menu, MenuDivider, MenuItem, Popover, Position, Navbar, Alignment } from "@blueprintjs/core"
+import { Link } from "react-router-dom";
+import FlipCard from "../../components/FlipCard/FlipCard"
 import axios from 'axios'
+import { Container, Row, Col } from 'reactstrap';
+
 
 class Result extends Component {
 
@@ -10,7 +15,8 @@ class Result extends Component {
     this.state = {
       confirmed: null,
       recovered: null,
-      deaths: null
+      deaths: null,
+      country: null
     }
   }
 
@@ -30,6 +36,7 @@ class Result extends Component {
         let confirmed = endOfMonth - oct1st
         if(isNaN(confirmed) || confirmed === 0) confirmed = "No data available on confirmed cases."
         this.setState({ confirmed: confirmed })
+        this.setState({ country: slug })
       })
       .catch( error => {
           console.log("confirmed gave error")
@@ -72,23 +79,28 @@ class Result extends Component {
   render(){
     return(
       <div>
-        <a href = "/">
-          <Button icon = "arrow-left" text = "back to home" />
-        </a>
-        {
-        !!this.state.confirmed && !!this.state.recovered && !!this.state.deaths ?
-        (<div>
-          <Card interactive={true} elevation={Elevation.TWO}>
-            <h1>Confirmed Cases: {parseInt(this.state.confirmed) !== NaN ? `${this.state.confirmed}` : "loading..."}</h1>
-          </Card>
-          <Card interactive={true} elevation={Elevation.TWO}>
-            <h1>Recovered Cases: {parseInt(this.state.recovered) !== NaN ? `${this.state.recovered}` : "loading..."}</h1>
-          </Card>
-          <Card interactive={true} elevation={Elevation.TWO}>
-            <h1>Deaths: {parseInt(this.state.deaths) !== NaN ? `${this.state.deaths}` : "loading..."}</h1>
-          </Card>
-        </div>) : ("Loading...")
-      }
+        <Fragment>
+          <Navbar className="bp3-dark">
+            <Navbar.Group align={Alignment.LEFT}>
+                <Navbar.Heading>Homework 4</Navbar.Heading>
+                <Navbar.Divider />
+                <Link to="/"><Button className="bp3-minimal" icon="home" text="Home" /></Link>
+            </Navbar.Group>
+          </Navbar>
+          <div style={{display: 'flex', justifyContent: 'center', marginTop: '100px'}}>
+            {
+              !!this.state.confirmed && !!this.state.recovered && !!this.state.deaths ?
+              (
+                <FlipCard
+                confirmedCases={this.state.confirmed}
+                recoveredCases={this.state.recovered}
+                deaths={this.state.deaths}
+                country={this.state.country}
+              />
+              ) : (<h3>"Loading..."</h3>)
+            }
+          </div>
+      </Fragment>
       </div>
     )
   }
