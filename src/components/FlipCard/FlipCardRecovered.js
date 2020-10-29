@@ -1,29 +1,25 @@
 import { React, Component } from 'react'
 import "./FlipCard.css"
 
-class FlipCard extends Component {
+class FlipCardRecovered extends Component {
     constructor(props) {
         super(props)
     }
 
     render(){
         const {
-            confirmedCases,
             recoveredCases,
-            deaths,
             country,
         } = this.props;
         return (
             <div className="flip-card">
                 <div className="flip-card-inner">
                     <div className="flip-card-front">
-                        <h1 style={{"font-size": "50px"}}>{country}</h1>
+                        <h1 style={{"font-size": "40px"}}>Recovered Cases</h1>
                     </div>
                     <div className="flip-card-back">
-                        <h1>Stats</h1>
-                        <h2>Confirmed Cases: {confirmedCases}</h2>
-                        <h2>Recovered Cases: {recoveredCases}</h2>
-                        <h2>Deaths: {deaths}</h2>
+                        <h1>Recovered Cases</h1>
+                        <h2>{recoveredCases}</h2>
                     </div>
                 </div>
             </div>
@@ -33,4 +29,4 @@ class FlipCard extends Component {
 
 }
 
-export default FlipCard
+export default FlipCardRecovered

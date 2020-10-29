@@ -2,7 +2,9 @@ import { React, Component, Fragment } from 'react'
 import { Card, Elevation } from '@blueprintjs/core'
 import { Button, Menu, MenuDivider, MenuItem, Popover, Position, Navbar, Alignment } from "@blueprintjs/core"
 import { Link } from "react-router-dom";
-import FlipCard from "../../components/FlipCard/FlipCard"
+import FlipCardConfirmed from "../../components/FlipCard/FlipCardConfirmed"
+import FlipCardRecovered from "../../components/FlipCard/FlipCardRecovered"
+import FlipCardDeaths from "../../components/FlipCard/FlipCardDeaths"
 import axios from 'axios'
 import { Container, Row, Col } from 'reactstrap';
 
@@ -87,16 +89,27 @@ class Result extends Component {
                 <Link to="/"><Button className="bp3-minimal" icon="home" text="Home" /></Link>
             </Navbar.Group>
           </Navbar>
-          <div style={{display: 'flex', justifyContent: 'center', marginTop: '100px'}}>
+          <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
+            <h1 style={{"font-size": "100px"}}>{this.state.country}</h1>
+          </div>
+          <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
             {
               !!this.state.confirmed && !!this.state.recovered && !!this.state.deaths ?
               (
-                <FlipCard
-                confirmedCases={this.state.confirmed}
-                recoveredCases={this.state.recovered}
-                deaths={this.state.deaths}
-                country={this.state.country}
-              />
+              <Fragment>
+                <FlipCardConfirmed
+                  confirmedCases={this.state.confirmed}
+                  country={this.state.country}
+                />
+                <FlipCardRecovered
+                  recoveredCases={this.state.recovered}
+                  country={this.state.country}
+                />
+                <FlipCardDeaths
+                  deaths={this.state.deaths}
+                  country={this.state.country}
+                />
+              </Fragment>
               ) : (<h3>"Loading..."</h3>)
             }
           </div>
